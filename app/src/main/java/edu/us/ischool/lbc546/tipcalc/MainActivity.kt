@@ -22,9 +22,10 @@ class MainActivity : AppCompatActivity() {
         fun chargeStringToDouble(amount: String): Double {
             val remove = Regex("[\$,.]")
             val cleanString: String = remove.replace(amount, "")
-            return cleanString.toDouble()
+            return cleanString.toDouble() / 100
         }
 
+        // Answer by Guilherme Oliveira @
         // https://stackoverflow.com/questions/5107901/better-way-to-format-currency-input-edittext
         charge.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity() {
                 if (!s.toString().equals("")) {
                     charge.removeTextChangedListener(this)
                     val parsed = chargeStringToDouble(charge.text.toString())
-                    val formatted: String = NumberFormat.getCurrencyInstance().format((parsed / 100))
+                    val formatted: String = NumberFormat.getCurrencyInstance().format(parsed)
                     charge.setText(formatted)
                     charge.setSelection(formatted.length)
 
@@ -48,14 +49,9 @@ class MainActivity : AppCompatActivity() {
         })
 
         tip.setOnClickListener {
-            var currCharge = chargeStringToDouble(charge.text.toString()) / 100
-            val a = currCharge * 15 / 100
-            val tipToast: Toast = Toast.makeText(applicationContext, "$" + "%.2f".format(a), Toast.LENGTH_LONG)
+            val currCharge = chargeStringToDouble(charge.text.toString())
+            val tipToast: Toast = Toast.makeText(applicationContext, "$" + "%.2f".format(currCharge * 15 / 100), Toast.LENGTH_LONG)
             tipToast.show()
         }
-    }
-
-    companion object {
-        const val TAG = "MainActivity"
     }
 }
